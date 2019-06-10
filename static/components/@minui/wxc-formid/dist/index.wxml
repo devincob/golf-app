@@ -1,0 +1,5 @@
+<form bindsubmit="saveFormId" report-submit="{{true}}" class='form_class'>
+  <button formType="submit" bindtap="emitAbnorTap" class="abnor__form_button" hover-class="weui-cell_active">
+    <slot></slot>
+  </button>
+</form>

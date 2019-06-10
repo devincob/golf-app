@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "wxc-popup": "../../wxc-popup/dist/index",
+    "wxc-icon": "../../wxc-icon/dist/index"
+  },
+  "component": true
+}

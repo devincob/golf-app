@@ -1,0 +1,89 @@
+.weui-cell {
+  padding: 20rpx 30rpx;
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+.weui-cell:before {
+  content: " ";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 2rpx;
+  border-top: 1px solid #e5e5e5;
+  color: #e5e5e5;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+  -webkit-transform: scaleY(0.5);
+  transform: scaleY(0.5);
+  left: 30rpx;
+  z-index: 2;
+}
+.weui-cells:after {
+  content: " ";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 2rpx;
+  border-bottom: 2rpx solid #e5e5e5;
+  color: #e5e5e5;
+  -webkit-transform-origin: 0 100%;
+  transform-origin: 0 100%;
+  -webkit-transform: scaleY(0.5);
+  transform: scaleY(0.5);
+  z-index: 2;
+}
+.weui-cell__bd {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+.weui-cell__ft {
+  text-align: right;
+  color: #808080;
+}
+.weui-cell__ft {
+  text-align: right;
+  color: #808080;
+  position: absolute;
+  top: 0rpx;
+  right: 0rpx;
+}
+.weui-cell_swiped {
+  padding: 0;
+}
+
+.weui-cell_swiped > .weui-cell__bd {
+  position: relative;
+  z-index: 3;
+  background-color: #FFFFFF;
+}
+
+.weui-cell_swiped > .weui-cell__ft {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  color: #FFFFFF;
+}
+
+.weui-swiped-btn {
+  display: block;
+  padding: 20rpx 1em;
+  line-height: 1.47058824;
+  color: inherit;
+
+}
+.weui-swiped-btn_warn {
+  background-color: #FF3B30;
+}
+

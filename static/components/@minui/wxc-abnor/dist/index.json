@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "wxc-formid": "../../wxc-formid/dist/index"
+  },
+  "component": true
+}

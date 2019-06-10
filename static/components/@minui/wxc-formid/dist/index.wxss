@@ -1,0 +1,24 @@
+.abnor__form_button {
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  text-align: initial;
+  border-radius: 0;
+  line-height: initial;
+  display: initial;
+}
+
+.abnor__form_button::after,
+.abnor__form_button::before{
+  border: 0;
+}
+
+.form_class {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+.weui-cell_active {
+  background-color: #ECECEC;
+}

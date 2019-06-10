@@ -1,0 +1,14 @@
+<div class="weui-cell weui-cell_swiped">
+  <div class="weui-cell__bd"
+       bindtouchstart="onTableCellTouchStart"
+       bindtouchmove="onTableCellTouchMove"
+       bindtouchend="onTableCellTouchEnd"
+       bindtouchcancel="onTableCellTouchEnd"
+       data-index="{{index}}"
+       style="transform: translateX(-{{offsetRecord.index == index ? offsetRecord.offset : 0}}rpx)">
+    <slot></slot>
+  </div>
+  <div class="weui-cell__ft">
+    <a class="weui-swiped-btn weui-swiped-btn_warn" bindtap="onDeleteButtonTapped" data-index="{{index}}">删除</a>
+  </div>
+</div>

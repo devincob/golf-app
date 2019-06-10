@@ -1,0 +1,33 @@
+<wxc-popup class="J_Popup__Calendar" animation-mode="bottom" catchtouchmove="onPopupTap" align="bottom">
+  <view class="popup__content" catchtap="onPopupTap" catchtouchmove="onPopupTap">
+    <view class="canlendarBgView">
+      <view class="canlendarView">
+        <view class="canlendarTopView">
+          <view wx:if="{{multiple}}" class="leftBgView" style="position: absolute;left: 4rpx;" bindtap="onClearClick">
+            <view class="leftView">清除</view>
+          </view>
+          <view class="leftBgView" bindtap="handleCalendar" data-handle="prev">
+            <view class="leftView"><wxc-icon size="30" type="arrow-left"></wxc-icon></view>
+          </view>
+          <view class="centerView">{{cur_year || "--"}} 年 {{cur_month || "--"}} 月</view>
+          <view class="rightBgView" bindtap="handleCalendar" data-handle="next">
+            <view class="rightView"><wxc-icon size="30" type="arrow-right"></wxc-icon></view>
+          </view>
+          <view wx:if="{{multiple}}" class="rightBgView" style="position: absolute;right: 4rpx;" bindtap="onDoneClick">
+            <view class="rightView">完成</view>
+          </view>
+        </view>
+        <view class="weekBgView">
+          <view class="weekView" wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
+        </view>
+        <view class="dateBgView">
+          <view wx:if="{{hasEmptyGrid}}" class="dateEmptyView" wx:for="{{empytGrids}}" wx:key="{{index}}" data-idx="{{index}}">
+          </view>
+          <view class="dateView" wx:for="{{days}}" wx:key="{{index}}" data-idx="{{index}}" bindtap="dateSelectAction">
+            <view class="datesView {{item.active ? 'dateSelectView' : ''}}">{{item.date}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</wxc-popup>
