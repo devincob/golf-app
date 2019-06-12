@@ -69,6 +69,9 @@ exports.default = Component({
       this._timer = clearTimeout(this._timer);
 
       this.setData({ isShow: false });
+    },
+    onMaskTap: function () {
+      this.hide()
     }
   }
 });

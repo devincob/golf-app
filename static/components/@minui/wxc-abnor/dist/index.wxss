@@ -22,7 +22,7 @@
     height: 66rpx;
     margin-top: 30rpx;
     padding: 0 30rpx;
-    background-color: #ff6600;
+    background-color: #22b96a;
     border: 0 none;
     border-radius: 2rpx;
     color: #fff;
@@ -32,7 +32,8 @@
     line-height: 66rpx
 }
 .abnor__btn:active {
-    background-color: #ff6600
+    background-color: #25da91;
+    opacity: .92;
 }
 .abnor__image {
     width: 514rpx;

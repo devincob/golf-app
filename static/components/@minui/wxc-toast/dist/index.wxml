@@ -1,4 +1,4 @@
-<view class="toast" wx:if="{{isShow}}" style="z-index: {{zIndex}};">
+<view class="toast" wx:if="{{isShow}}" bindtap="onMaskTap" style="z-index: {{zIndex}};">
     <view class="toast__box">
         <view wx:if="{{icon || src}}" class="toast__icon">
             <block wx:if="{{icon && !src}}">

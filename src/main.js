@@ -24,14 +24,14 @@ export default {
     // 页面前带有 ^ 符号的，会被编译成首页，其他页面可以选填，我们会自动把 webpack entry 里面的入口页面加进去
     pages: ['^pages/index/main'],
     window: {
-      'navigationBarTextStyle': 'white',
+      'navigationBarTextStyle': 'black',
       'navigationBarTitleText': '人人财务高尔夫',
-      'navigationBarBackgroundColor': '#1ab976',
+      'navigationBarBackgroundColor': 'white',
       'backgroundColor': '#f8f8f8'
     },
     permission: {
       'scope.userLocation': {
-        'desc': '我们将获取您的位置用于定位所在城市、上下班签到等功能'
+        'desc': '我们将获取您的位置用于定位所在城市、导航等功能'
       }
     }
   }

@@ -6,6 +6,8 @@ export default {
   config: {
     navigationBarTitleText: '我的预约',
     enablePullDownRefresh: true,
+    'navigationBarTextStyle': 'black',
+    'navigationBarBackgroundColor': '#ffffff',
     usingComponents: {
       'wxc-badge': '@wxc-badge',
       'wxc-cc': '@wxc-cc',

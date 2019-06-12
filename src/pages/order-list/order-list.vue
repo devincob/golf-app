@@ -1,5 +1,5 @@
 <template>
-  <div class="page page-ticketOrder">
+  <div class="page page_order_list">
     <view class="weui-tab">
       <view class="weui-navbar">
         <block v-for="tab in tabs" :key="tab">
@@ -11,61 +11,55 @@
       </view>
       <view class="weui-tab__panel">
         <view class="weui-tab__content" :hidden="activeIndex !== 0">
-          <view class="bg_blue"></view>
+          <view class="bg_green"></view>
           <view class="card_list">
             <view class="weui-cells card_box" v-for="(list,index) in waitHandleInfo" :key="index">
-              <!--<navigator @click="goNext(list)">-->
               <navigator :href="'/pages/order-detail/main?orderId='+list.orderId">
-                <view class="weui-cell customer_number">
-                  <view class="weui-cell__bd order_title">
-                    <span class="order_title_label">订单号：{{list.orderCode}}</span>
+                <view class="weui-cell order_number">
+                  <view class="weui-cell__bd order_title">订单号：
+                    <span class="order_title_label">{{list.orderCode}}</span>
                   </view>
                   <view class="order_time"><span class="order_time_label">{{list.orderTime}}</span></view>
                 </view>
-                <view style="display: flex;padding:14rpx 30rpx; " class="ect_ect_ect">
-                  <view class="weui-cell__bd ">
-                    <div class="goodImg" v-for="(item, index1) in list.productImgs" :key="index1">
+                <view class="ect_ect_ect">
+                  <view class="weui-cell__bd">
+                    <div class="goods_imgs" v-for="(item, index1) in list.productImgs" :key="index1">
                       <x-image width="80" height="80" alt="" :src="item || '/static/images/photo.jpg'"/>
                     </div>
-                    <div class="desc_ellipsis" v-if="list.productImgs.length === 4">
-                      ...
-                    </div>
+                    <div class="goods_desc_ellipsis" v-if="list.productImgs.length === 4">...</div>
                   </view>
                 </view>
-                <view style="display: flex;padding:14rpx 30rpx;" class=" customer_price">
-                </view>
-                <view style="display: flex;padding:14rpx 30rpx;float: right" class=" customer_step">
-                  <view>共<span class="auditor"> {{list.sumNum}}</span> 商品</view>
+                <view class="goods_blank"></view>
+                <view class="goods_total">
+                  <view>共<span class="auditor"> {{list.sumNum}}</span> 件商品</view>
                 </view>
               </navigator>
             </view>
           </view>
         </view>
         <div class="weui-tab__content" :hidden="activeIndex !== 1">
-          <view class="bg_blue"></view>
+          <view class="bg_green"></view>
           <view class="card_list">
             <view class="weui-cells card_box"  v-for="(list,index) in  completeInfo " :key="index">
               <navigator :href="'/pages/order-detail/main?orderId='+list.orderId">
-                <view class="weui-cell customer_number">
-                  <view class="weui-cell__bd order_title">
-                    <span class="order_title_label">订单号：{{list.orderCode}}</span>
+                <view class="weui-cell order_number">
+                  <view class="weui-cell__bd order_title">订单号：
+                    <span class="order_title_label">{{list.orderCode}}</span>
                   </view>
                   <view class="order_time"><span class="order_time_label">{{list.orderTime}}</span></view>
                 </view>
-                <view style="display: flex;padding:14rpx 30rpx;">
-                  <view class="weui-cell__bd ect_ect_ect">
-                    <div class="goodImg" v-for="(item, index1) in list.productImgs" :key="index1">
+                <view class="ect_ect_ect">
+                  <view class="weui-cell__bd">
+                    <div class="goods_imgs" v-for="(item, index1) in list.productImgs" :key="index1">
                       <x-image width="80" height="80" alt="" :src="item || '/static/images/photo.jpg'"/>
                     </div>
-                    <div class="desc_ellipsis" v-if="list.productImgs.length === 4">
-                      ...
-                    </div>
+                    <div class="goods_desc_ellipsis" v-if="list.productImgs.length === 4">...</div>
                   </view>
                 </view>
-                <view style="display: flex;padding:14rpx 30rpx;" class=" customer_price">
+                <view class="goods_blank">
                 </view>
-                <view style="display: flex;padding:14rpx 30rpx;float: right" class=" customer_step">
-                  <view>共<span class="auditor"> {{list.sumNum}}</span> 商品</view>
+                <view class="goods_total">
+                  <view>共<span class="auditor">{{list.sumNum}}</span> 件商品</view>
                 </view>
               </navigator>
             </view>
@@ -73,29 +67,24 @@
         </div>
       </view>
     </view>
-
-    <!--<wxc-abnor v-if="ioOrders && aoOrders && !ioOrders.length && !aoOrders.length" type="DATA" title="没有未处理订单哦"></wxc-abnor>-->
-    <wxc-abnor
-      v-if="isError"
-      :title="errorMessage"
-      type="DATA"
-      @abnortap="onRefreshTap"></wxc-abnor>
-    <wxc-loadmore is-end v-else-if="isLast"></wxc-loadmore>
+    <wxc-abnor v-if="activeIndex === 0 && !waitHandleInfo.length && !isError ||activeIndex === 1 && !completeInfo.length && !isError " type="DATA" title="没有订单哦"></wxc-abnor>
+    <wxc-abnor v-if="isError" :title="errorMessage"  type="REQUEST_ERROR" @abnortap="onRefreshTap"></wxc-abnor>
+    <wxc-loadmore is-end v-if="isLast&&isEmpty"></wxc-loadmore>
   </div>
 </template>
 
 <script>
-  // const sliderWidth = 53
   import XImage from '../../libs/components/Image'
 
   export default {
     components: {XImage},
-    name: 'ticketOrder',
+    name: 'order_list',
     data () {
       return {
+        isEmpty: false,
         isError: false,
         isLast: false,
-        errorMessage: '',
+        errorMessage: '发生未知错误',
         membId: 0,
         pageIndex: 0,
         pageSize: 5,
@@ -114,7 +103,7 @@
       goNext(list){
         if (list.workflowId !== 0) {
           this.$wx.navigateTo({
-            // url: `/pages/ticketOrdersDetails/main?orderId=${list.orderId}`
+            // url: `/pages/order_listsDetails/main?orderId=${list.orderId}`
           })
         } else {
           this.$wx.navigateTo({
@@ -123,6 +112,7 @@
         }
       },
       clear(){
+        this.pageIndex = 0
         this.waitHandleInfo = []
         this.completeInfo = []
       },
@@ -134,68 +124,62 @@
         console.log(this.pageIndex, 'pageIndex')
         console.log(this.activeIndex, 'activeIndex')
         try {
-          this.isError = false
+          this.isError = true
           this.$loading.show()
           if (this.activeIndex === 0) { // 待处理
-            await this.$$main.productOrderList({
+            let res = await this.$$main.productOrderList({
               pageIndex: ++this.pageIndex,
               pageSize: this.pageSize,
               isUsed: 'N',
               membId: this.membId
-            }).then((res) => {
-              console.log(this.pageIndex, 'pageIndex')
-              if (this.pageIndex === 1 && (!res.datas || !res.datas.length)){
-                this.waitHandleInfo = res.datas || []
-                this.isLast = true
-                this.isError = true
-                this.errorMessage = '您暂时没有待处理订单'
-                return
-              }
-              if (res.datas.length < this.pageSize){
-                this.isLast = true
-              }
-              this.waitHandleInfo = this.waitHandleInfo.concat(res.datas)
-              this.waitHandleInfo && this.waitHandleInfo.forEach((item) => {
-                item.productImgs = item.productImgs.splice(0, 4)
-              })
-              console.log(this.waitHandleInfo, '1231321321312')
             })
+            if (this.pageIndex === 1 && (!res.datas || !res.datas.length)){
+              this.waitHandleInfo = res.datas || []
+              this.isLast = true
+              this.$loading.hide()
+              this.isError = false
+              this.isEmpty = !!this.completeInfo.length
+              return
+            }
+            if (res.datas.length < this.pageSize){
+              this.isLast = true
+            }
+            let datas = res.datas.map((item) => {
+              item.productImgs = item.productImgs.splice(0, 4)
+              return item
+            })
+            this.waitHandleInfo = [...this.waitHandleInfo, ...datas]
+            this.isEmpty = !!this.waitHandleInfo.length
+            // console.log(this.waitHandleInfo, 'waitHandleInfo')
           } else if (this.activeIndex === 1) { // 已完成
-            await this.$$main.productOrderList({
+            let res = await this.$$main.productOrderList({
               pageIndex: ++this.pageIndex,
               pageSize: this.pageSize,
-              isUsed: 'N',
+              isUsed: 'Y',
               membId: this.membId
-            }).then((res) => {
-              if (this.pageIndex === 1 && (!res.datas || !res.datas.length)){
-                this.completeInfo = res.datas || []
-                this.isLast = true
-                this.isError = true
-                this.errorMessage = '您暂时没有已完成订单'
-                return
-              }
-              if (res.datas.length < this.pageSize){
-                this.isLast = true
-              }
-              // this.completeInfo = [...this.completeInfo, ...res.datas]
-              this.completeInfo = this.completeInfo.concat(res.datas)
-              console.log(this.completeInfo, 1)
-              this.completeInfo && this.completeInfo.forEach((item) => {
-                item.productImgs = item.productImgs.splice(0, 4)
-              })
-              console.log(this.completeInfo, 2)
             })
-          } else { // 待处理
-            // let waitHandleInfo = await this.$$main.iOListWaitHandle({})
-            // this.waitHandleInfo = waitHandleInfo
-            // if (!waitHandleInfo){
-            //   this.isError = true
-            //   this.errorMessage = '您暂时没有待处理订单'
-            // }
+            if (this.pageIndex === 1 && (!res.datas || !res.datas.length)){
+              this.completeInfo = res.datas || []
+              this.isLast = true
+              this.$loading.hide()
+              this.isError = false
+              this.isEmpty = !!this.completeInfo.length
+              return
+            }
+            if (res.datas.length < this.pageSize){
+              this.isLast = true
+            }
+            let datas = res.datas.map((item) => {
+              item.productImgs = item.productImgs.splice(0, 4)
+              return item
+            })
+            this.completeInfo = [...this.completeInfo, ...datas]
+            this.isEmpty = !!this.completeInfo.length
+            // console.log(this.completeInfo, 'completeInfo')
           }
-          console.log(this.waitHandleInfo, '11111')
-          console.log(this.completeInfo, '2222')
           this.$loading.hide()
+          this.isError = false
+          // console.log('activeIndex', this.activeIndex, '!waitHandleInfo.length', !this.waitHandleInfo.length, '!this.isError', !this.isError, 'this.isLast', this.isLast, 'this.isEmpty', this.isEmpty)
         } catch (e) {
           this.$loading.hide()
           e.message && this.$showToast(e.message)
@@ -239,17 +223,11 @@
   }
 </script>
 <style lang="less">
-  ect_ect_ect{
-    text-overflow:ellipsis;overflow: hidden;
-    width: 250px;white-space: nowrap;
+  .ect_ect_ect{
+    display: flex;padding:14rpx 30rpx;
   }
-  .order_title{
-    text-overflow:ellipsis;overflow: hidden;
-    width: 150px;white-space: nowrap;
-    .order_title_label{
-    }
-  }
-  div.goodImg
+
+  div.goods_imgs
   {
     width:60px;
     height:60px;
@@ -258,11 +236,11 @@
     float:left;
     text-align:center;
   }
-  div.goodImg img
+  div.goods_imgs img
   {
     display:inline;
   }
-  div.goodImg a:hover img
+  div.goods_imgs a:hover img
   {
     border:1px solid #333333;
   }
@@ -274,16 +252,16 @@
     font-size:12px;
     margin:10px 5px 10px 5px;
   }
-  .desc_ellipsis{
+  .goods_desc_ellipsis{
     float:left;
     text-align:end;
     margin-top:30px;
     margin-left:10px;
   }
-  .page-ticketOrder{
+  .page_order_list{
     .weui-tab{
       .weui-navbar{
-        background: #1ab976;
+        background: #25da91;
         border: none;
         padding: 20rpx 0 20rpx;
         .weui-navbar__item{
@@ -317,7 +295,7 @@
           display: block;
         }
         .weui-navbar__item:active {
-          background-color: #1ab976;
+          background-color: #25da91;
         }
       }
       .weui-navbar:after {
@@ -330,8 +308,8 @@
         }
         .weui-tab__content{
           display: block;
-          .bg_blue{
-            background: #1ab976;
+          .bg_green{
+            background: #25da91;
             height: 70rpx;
             margin-top: -8rpx;
           }
@@ -343,12 +321,15 @@
               margin: 20rpx;
               background: #fff;
               box-shadow: 0 0 10rpx #e4ecf4;
-              border-radius: 20rpx;
+              border-radius: 16rpx;
               overflow: hidden;
               padding-top: 0;
               box-sizing: border-box;
-              .customer_number:after,
-              .customer_price:after{
+              .order_number:after,
+              .goods_blank {
+                display: flex;padding:14rpx 30rpx;
+              }
+              .goods_blank:after{
                 content: " ";
                 position: absolute;
                 left: 0;
@@ -357,29 +338,17 @@
                 /*height: 2rpx;*/
                 color: #D9D9D9;
               }
-              .customer_number:after{
-                /*border-bottom: 2rpx solid #f2f2f2;*/
-              }
-              .customer_price:after{
-                /*border-bottom: 2rpx dashed #f2f2f2;*/
-              }
-              .customer_number{
+              .order_number{
                 font-size: 24rpx;
-                color: #666666;
-                font-weight: 300;
-                .customer_tip{
-                  font-size: 20rpx;
-                  color: #fff;
-                  padding: 4rpx 16rpx;
-                  border-radius: 22rpx;
-                  position: relative;
-                  top: -6rpx;
-                }
-                .tip_bg_blue{
-                  background: #daecff;
-                }
-                .tip_bg_violet{
-                  background: #9b58eb;
+                /*color: #666666;*/
+                .order_title{
+                  font-size: 26rpx;
+                  text-overflow:ellipsis;overflow: hidden;
+                  width: 150px;white-space: nowrap;
+                  .order_title_label{
+                    color: #000;
+                    opacity: 0.9;
+                  }
                 }
                 .order_time{
                   .order_time_label{
@@ -392,27 +361,15 @@
                   }
                 }
               }
-              .customer_name{
-                font-size: 32rpx;
-                color: #333333;
-                font-weight: 600;
-              }
-              .customer_product{
-                font-size: 28rpx;
-                color: #333;
-                padding: 6rpx 30rpx;
-                .cl_666{
-                  color: #666;
-                }
-              }
-              .customer_price{
+              .goods_blank{
                 font-size: 30rpx;
                 color: #333;
                 font-weight: 600;
                 padding: 6rpx 0;
                 margin: 0 30rpx;
               }
-              .customer_step{
+              .goods_total{
+                display: flex;padding:14rpx 30rpx;float: right;
                 font-size: 24rpx;
                 color: #666;
                 font-weight: 600;

@@ -6,7 +6,8 @@ export default {
   config: {
     navigationBarTitleText: '球场预约',
     usingComponents: {
-      'wxc-popup': '@wxc-popup'
+      'wxc-popup': '@wxc-popup',
+      'wxc-abnor': '@wxc-abnor'
     }
   }
 }

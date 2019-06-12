@@ -34,7 +34,7 @@
             <img src="/static/images/right_back.png" style="width: 14rpx;height:28rpx;" alt="">
           </div>
         </a>
-        <a v-if="$user.userInfo.isAdmin === 'Y'" class="weui-cell weui-cell_access weui-cell_example" href="javascript:;">
+        <a v-if="$user.userInfo.isAdmin === 'Y'" class="weui-cell weui-cell_access weui-cell_example" href="/pages/consumption-confirmation/main">
           <div class="weui-cell__hd"><img src="/static/images/member_consumption_confrim.png" alt="" style="width:32rpx;height: 32rpx;margin-right:34rpx;display:block"></div>
           <div class="weui-cell__bd">
             <p>消费确认</p>

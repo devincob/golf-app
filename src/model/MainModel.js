@@ -1,6 +1,6 @@
 /*
 **本代码由生成器自动生成，请勿手动修改
-**生成时间：2019-06-06 12:09:26
+**生成时间：2019-06-06 13:55:11
 */
 import Model from '../libs/model'
 export default class MSModel extends Model {
@@ -51,11 +51,11 @@ export default class MSModel extends Model {
        //发布日期
        "createDate":string
        //浏览次数
-       "viewTimes":string
+       "viewTimes":int
        //分享图片
        "shareImg":string
        //是否置顶
-       "isTop":int
+       "isTop":string
    }
 
    */
@@ -244,6 +244,8 @@ export default class MSModel extends Model {
        "bookDate":string
        //周几
        "week":stirng
+       //预约日期1
+       "bookDatestr":stirng
    }
 
    */

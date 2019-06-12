@@ -69,3 +69,17 @@ page {
   font-weight: 500;
   font-style: normal;
 }
+
+
+.fix-iphonex-tabbar {
+  bottom: env(safe-area-inset-bottom) !important;
+}
+.fix-iphonex-tabbar::after {
+  content: ' ';
+  position: fixed;
+  bottom: 0!important;
+  height: env(safe-area-inset-bottom) !important;
+  width: 100%;
+  background: #ffffff;
+}
+

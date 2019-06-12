@@ -1,53 +1,63 @@
 <template>
   <view class="page page-course-reservation-details">
-    <view class="banner">
-      <view class="banner-left">
-        <view class="title">{{courseInfo.gcName}}高尔夫球场</view>
-        <view class="date mt20">{{courseInfo.bookDate}}<span class="ml-sm">{{courseInfo.week}}</span></view>
-        <view class="date">{{courseInfo.pidName}}</view>
+    <view v-if="!isError">
+      <view class="banner" :class="{'banner-border-radius': !courseInfo || !courseInfo.weatherInfo}">
+        <view class="banner-left">
+          <view class="title">{{courseInfo.gcName}}高尔夫球场</view>
+          <view class="date mt20">{{courseInfo.bookDate}}<span class="ml-sm">{{courseInfo.week}}</span></view>
+          <view class="date">{{courseInfo.pidName}}</view>
+        </view>
+        <view class="banner-right">
+          <image src="/static/images/course_reservation_banner_person.png" mode="aspectFit"/>
+        </view>
       </view>
-      <view class="banner-right">
-        <image src="/static/images/course_reservation_banner_person.png" mode="aspectFit"/>
+      <view v-if="courseInfo && courseInfo.weatherInfo" class="weather">
+        <view class="weather-line">
+          <view>{{courseInfo.weatherInfo.weatherInfo}}</view>
+          <view>{{courseInfo.weatherInfo.windDirection}}{{courseInfo.weatherInfo.windSize}}</view>
+        </view>
+        <view class="weather-line">
+          <view>{{courseInfo.weatherInfo.minTemp}}~{{courseInfo.weatherInfo.maxTemp}}</view>
+          <view>空气质量指数：{{courseInfo.weatherInfo.aqi}} {{aqiFormat}}</view>
+        </view>
       </view>
-    </view>
-    <view class="weather weui-flex">
-      <view class="weui-flex__item weather-left">28℃</view>
-      <view class="weui-flex__item weather-center">28℃</view>
-      <view class="weui-flex__item text-right weather-right">
-        <view>东南风3-4级</view>
-        <view>空气质量指数：26.0 优</view>
+      <view class="reservation-info">
+        <view class="reservation-info-item">
+          <view class="reservation-info-item-left">场次服务</view>
+          <view class="reservation-info-item-right">{{courseInfo.pidService || '无'}}</view>
+        </view>
+        <hr/>
+        <view class="reservation-info-item">
+          <view class="reservation-info-item-left">单价</view>
+          <view class="reservation-info-item-right">{{courseInfo.price}}元/人</view>
+        </view>
+        <hr/>
+        <view class="reservation-info-item">
+          <view class="reservation-info-item-left">人数</view>
+          <view class="reservation-info-item-right reservation-number">
+            <image class="btn-del" src="/static/images/button_del.png" mode="aspectFit" @click="onNumClick(-1)"/>
+            <view class="num">{{num}}</view>
+            <image class="btn-add" src="/static/images/button_add.png" mode="aspectFit" @click="onNumClick(1)"/>
+          </view>
+        </view>
       </view>
-    </view>
-    <view class="reservation-info weui-cells">
-      <view class="weui-cell">
-        <view class="weui-cell__bd">场次服务</view>
-        <view class="weui-cell__ft">{{courseInfo.pIDService}}</view>
-      </view>
-      <hr/>
-      <view class="weui-cell">
-        <view class="weui-cell__bd">单价</view>
-        <view class="weui-cell__ft">{{courseInfo.price}}元/人</view>
-      </view>
-      <hr/>
-      <view class="weui-cell">
-        <view class="weui-cell__bd">人数</view>
-        <view class="weui-cell__ft reservation-number">
-          <image class="btn-del" src="/static/images/button_del.png" mode="aspectFit" @click="num--"/>
-          <view class="num">{{num}}</view>
-          <image class="btn-add" src="/static/images/button_add.png" mode="aspectFit" @click="num++"/>
+      <view class="footer">
+        <view class="btn-submit">
+          <view class="sum-div">
+            <span class="sum">共计</span><span class="sum-num">￥{{sumAmount}}</span>
+          </view>
+          <view class="submit" @click="onSubmitClick">
+            立即预定
+          </view>
         </view>
       </view>
     </view>
-    <view class="footer">
-      <view class="btn-submit">
-        <view class="sum-div">
-          <span class="sum">共计</span><span class="sum-num">￥{{sumAmount}}</span>
-        </view>
-        <view class="submit" @click="onSubmitClick">
-          立即预定
-        </view>
-      </view>
-    </view>
+    <wxc-abnor
+      v-if="isError"
+      :title="errorMessage"
+      type="REQUEST_ERROR"
+      abnor-style="position: fixed;bottom: 440rpx;right:0;"
+      @abnortap="queryGolfCourseInfo"></wxc-abnor>
     <wxc-popup
       class="pay-dialog"
       animation-mode="bottom"
@@ -55,32 +65,30 @@
       <view class="pay-dialog-content" @click.stop>
         <view class="title">支付方式</view>
         <view class="sum-amount">￥{{sumAmount}}</view>
-        <view class="weui-cells weui-cells_radio pay-choice">
-          <label class="weui-cell weui-check__label" @click="payType = 'W'">
-            <view class="weui-cell__bd">
+        <view class="pay-choice">
+          <view class="pay-choice-item" @click="payType = '1'">
+            <view class="pay-choice-item-left">
               <image src="/static/images/pay_wechat.png" mode="aspectFit" style="width: 60rpx;height: 60rpx;"/>
               <span class="type-name">微信支付</span>
             </view>
-            <view class="weui-cell__ft">
-              <image v-if="payType === 'W'" src="/static/images/pay_choice.png" mode="aspectFit" style="width: 38rpx;height: 38rpx;"/>
+            <view class="pay-choice-item-right">
+              <image v-if="payType === '1'" src="/static/images/pay_choice.png" mode="aspectFit" style="width: 38rpx;height: 38rpx;"/>
               <image v-else src="/static/images/pay_no_choice.png" mode="aspectFit" style="width: 38rpx;height: 38rpx;"/>
             </view>
-          </label>
+          </view>
           <hr/>
-          <label class="weui-cell weui-check__label" @click="payType = 'V'">
-            <view class="weui-cell__bd">
+          <view class="pay-choice-item" @click="onVipItemClick" :class="{'disable': residueTimes < num}">
+            <view class="pay-choice-item-left">
               <image src="/static/images/pay_logo.png" mode="aspectFit" style="width: 60rpx;height: 60rpx;"/>
-              <view style="display: flex;align-items: baseline">
-                <span class="type-name">会员抵扣</span><span class="type-name-tips">（剩余抵扣人次：20人）</span>
-              </view>
+              <span class="type-name">会员抵扣</span><span class="type-name-tips">（剩余抵扣人次：{{residueTimes}}人）</span>
             </view>
-            <view class="weui-cell__ft">
-              <image v-if="payType === 'V'" src="/static/images/pay_choice.png" mode="aspectFit" style="width: 38rpx;height: 38rpx;"/>
+            <view class="pay-choice-item-right">
+              <image v-if="payType === '2'" src="/static/images/pay_choice.png" mode="aspectFit" style="width: 38rpx;height: 38rpx;"/>
               <image v-else src="/static/images/pay_no_choice.png" mode="aspectFit" style="width: 38rpx;height: 38rpx;"/>
             </view>
-          </label>
+          </view>
         </view>
-        <div class="tabbar">
+        <div class="tabbar" @click="onPayClick">
           <a class="weui-tabbar__item weui-bar__item_on">立即支付</a>
         </div>
       </view>
@@ -96,35 +104,103 @@ export default {
       date: '',
       courseInfo: {},
       num: 1,
-      payType: 'W'
-    }
-  },
-  watch: {
-    num(val){
-      let max = this.courseInfo.residueTimes || 0
-      if (val < 1) {
-        this.num = 1
-      } else if (val > max){
-        this.num = max
-      }
+      payType: '1',
+      isError: false,
+      errorMessage: ''
     }
   },
   computed: {
     sumAmount(){
-      console.log(this.courseInfo.price)
       let price = this.courseInfo.price || 0
-      return (price * this.num).toFixed(1)
+      return (price * this.num).toFixed(2)
+    },
+    residueTimes(){
+      return this.$user && this.$user.userInfo && this.$user.userInfo.residueTimes || 0
+    },
+    aqiFormat(){
+      let text = ''
+      const aqi = this.courseInfo && this.courseInfo.weatherInfo && this.courseInfo.weatherInfo.aqi || -1
+      if (aqi >= 0 && aqi <= 50) {
+        text = '优'
+      } else if (aqi > 50 && aqi <= 100) {
+        text = '良'
+      } else if (aqi > 100 && aqi <= 150) {
+        text = '轻微污染'
+      } else if (aqi > 150 && aqi <= 200) {
+        text = '轻度污染'
+      } else if (aqi > 200 && aqi <= 250) {
+        text = '中度污染'
+      } else if (aqi > 250 && aqi <= 300) {
+        text = '中度重污染'
+      } else if (aqi > 300) {
+        text = '重污染'
+      }
+      return text
     }
   },
   methods: {
+    onNumClick(i){
+      this.num = this.num + i
+      let max = this.courseInfo && this.courseInfo.residueTimes || 1
+      if (this.num < 1) {
+        this.num = 1
+      } else if (this.num > max){
+        this.num = max
+      }
+    },
     async queryGolfCourseInfo(){
       try {
+        this.isError = false
         this.$loading.show()
+        await this.$store.dispatch('refreshUserInfo')
+        this.num = 1
         this.courseInfo = await this.$$main.golfCoursePeriodDetail({
           pIDId: this.pid,
           bookDate: this.date
         })
         this.$loading.hide()
+      } catch (e) {
+        this.$loading.hide()
+        this.isError = true
+        this.errorMessage = e.message
+      }
+    },
+    onDialogHide(){
+      this.$find('.pay-dialog') && this.$find('.pay-dialog').hide()
+    },
+    onSubmitClick(){
+      this.payType = '1'
+      this.$find('.pay-dialog') && this.$find('.pay-dialog').show()
+    },
+    onVipItemClick(){
+      if (this.residueTimes < this.num) {
+        return
+      }
+      this.payType = '2'
+    },
+    onPayClick(){
+      this.doReservation()
+    },
+    async doReservation(){
+      try {
+        this.$loading.show()
+        let data = await this.$$main.bookingBook({
+          gCId: this.courseInfo.gcId, // 球场Id
+          pIDId: this.pid, // 场次Id
+          bookDate: this.date, // 预定日期
+          bookNum: this.num, // 预定人数
+          payType: this.payType, // 支付方式
+          amount: this.sumAmount // 支付金额
+        })
+        this.$loading.hide()
+        if (this.payType === '1') {
+          this.doPay(data.bookId)
+        } else {
+          this.onPayFinish('场次预定成功', 'success')
+          // wx.navigateBack({
+          //   delta: 2
+          // })
+        }
       } catch (e) {
         this.$loading.hide()
         e.message && this.$wx.showToast({
@@ -133,8 +209,72 @@ export default {
         })
       }
     },
-    onSubmitClick(){
-      this.$find('.pay-dialog').show()
+    async doPay(id){
+      try {
+        this.$loading.show()
+        let data = await this.$$main.paymentPay({
+          orderId: id,
+          orderType: 'B'
+        })
+        this.$loading.hide()
+        const self = this
+        wx.requestPayment({
+          ...JSON.parse(data.jsApiParams),
+          success () {
+            wx.showModal({
+              title: '提示',
+              content: `支付成功`,
+              showCancel: false,
+              success (res) {
+                if (res.confirm) {
+                  self.onPayFinish('场次预定成功', 'success')
+                }
+              }
+            })
+          },
+          fail () {
+            self.onPayFail(id)
+          }
+        })
+      } catch (e) {
+        this.$loading.hide()
+        e.message && this.$wx.showToast({
+          title: e.message,
+          icon: 'none'
+        })
+      }
+    },
+    onPayFail(id){
+      const self = this
+      wx.showModal({
+        title: '提示',
+        content: `支付失败，是否需要重新支付？`,
+        cancelText: '退出支付',
+        confirmText: '重新支付',
+        success (res) {
+          if (res.confirm) {
+            self.doPay(id)
+          } else if (res.cancel) {
+            self.onPayFinish('场次预定失败', 'none')
+          }
+        }
+      })
+    },
+    onPayFinish(text, icon){
+      this.onDialogHide()
+      this.queryGolfCourseInfo()
+      let timer = setTimeout(() => {
+        wx.showToast({
+          title: text,
+          icon: icon,
+          duration: 2000
+        })
+        icon === 'success' && this.setBackParams({
+          needRefresh: true
+        })
+        clearTimeout(timer)
+        timer = null
+      }, 300)
     }
   },
   onLoad: function (options) {
@@ -148,12 +288,16 @@ export default {
 <style lang="less">
   .page-course-reservation-details{
     padding: 0 34rpx;
+    .banner-border-radius{
+      border-radius: 0 0 12rpx 12rpx;
+    }
     .banner{
       height: 316rpx;
       padding-left: 34rpx;
       background: -webkit-gradient(linear, left center, right center, from(#25da91), to(#1ab976));
       display: flex;
       justify-content: space-between;
+      box-shadow:0rpx 5rpx 15rpx 5rpx rgba(228,228,228,0.43);
       .banner-left{
         .title{
           font-size: 42rpx;
@@ -196,47 +340,37 @@ export default {
       padding: 0 34rpx;
       background: #fff;
       border-radius: 0 0 12rpx 12rpx;
-      font-family: PingFangSC;
       flex-wrap: nowrap;
-      .weather-left{
-        flex: 1;
-        font-size: 48rpx;
-        color: #333;
-      }
-      .weather-center{
-        flex: 1;
-      }
-      .weather-right{
-        flex: 2;
+      box-shadow:0rpx 5rpx 15rpx 5rpx rgba(228,228,228,0.43);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      .weather-line{
         font-size: 24rpx;
         color: #333;
-        display:flex;
-        justify-content:center;
-        flex-direction:column;
-        view{
-          width: auto;
-          height: 30rpx;
-          line-height: 30rpx;
-        }
+        height: 42rpx;
+        line-height: 42rpx;
+        display: flex;
+        justify-content: space-between;
       }
     }
     .reservation-info{
       border-radius: 12rpx;
-      position: unset;
-      .weui-cell{
-        position: unset;
+      background: #fff;
+      margin: 36rpx 0;
+      box-shadow:0rpx 5rpx 15rpx 5rpx rgba(228,228,228,0.43);
+      .reservation-info-item{
+        padding: 27rpx 28rpx;
         display: flex;
-        align-items:center;
-        justify-content:center;
-        vertical-align: middle;
-        .weui-cell__bd{
+        justify-content: space-between;
+        .reservation-info-item-left{
           height: 50rpx;
           line-height: 50rpx;
           font-weight: 500;
           font-size: 30rpx;
           color: #333;
         }
-        .weui-cell__ft{
+        .reservation-info-item-right{
           height: 50rpx;
           line-height: 50rpx;
           font-weight: 500;
@@ -350,34 +484,44 @@ export default {
         .pay-choice{
           margin-top: 70rpx;
           margin-bottom: 200rpx;
-          /*position: none;*/
           border-top: 2rpx solid #f4f4f4;
           border-bottom: 2rpx solid #f4f4f4;
-          .weui-cell{
-            /*position: none;*/
+          .pay-choice-item:active{
+            background: #eee;
+          }
+          .disable{
+            background: #ccc;
+          }
+          .pay-choice-item.disable:active{
+            background: #ccc;
+          }
+          .pay-choice-item{
+            padding: 27rpx 28rpx;
+            display: flex;
+            justify-content: space-between;
+            .pay-choice-item-left{
+              display: flex;
+              align-items: center;
+              .type-name{
+                color: #000;
+                font-size: 32rpx;
+                margin-left: 34rpx;
+              }
+              .type-name-tips{
+                color: #999;
+                font-size: 24rpx;
+              }
+            }
+            .pay-choice-item-right{
+              display: flex;
+              align-items: center;
+            }
           }
           hr{
             height:2rpx;
             border:none;
             border-top:2rpx solid #f4f4f4;
             margin: 0 34rpx;
-          }
-          .weui-cell__bd{
-            display: flex;
-            align-items: center;
-            .type-name{
-              color: #000;
-              font-size: 32rpx;
-              margin-left: 34rpx;
-            }
-            .type-name-tips{
-              color: #999;
-              font-size: 24rpx;
-            }
-          }
-          .weui-cell__ft{
-            display: flex;
-            align-items: center;
           }
         }
         .tabbar {

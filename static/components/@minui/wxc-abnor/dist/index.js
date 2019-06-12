@@ -31,11 +31,23 @@ exports.default = Component({
         }
       }
     },
+    abnorStyle: {
+      type: String,
+      value: ''
+    },
     image: {
       type: String,
       value: ''
     },
+    imgStyle: {
+      type: String,
+      value: ''
+    },
     title: {
+      type: String,
+      value: ''
+    },
+    titleStyle: {
       type: String,
       value: ''
     },
@@ -48,6 +60,14 @@ exports.default = Component({
       value: ''
     },
     buttonType: {
+      type: String,
+      value: ''
+    },
+    buttonStyle: {
+      type: String,
+      value: ''
+    },
+    buttonClass: {
       type: String,
       value: ''
     }

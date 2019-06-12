@@ -4,6 +4,8 @@
        :style="imgStyle"
        :class="imgClass"
        :data-src="getUploadImageUrl(src, '')"
+       :lazy-load="lazyLoad"
+       :mode="mode"
        @error="onError"
        @click="(e)=>$emit('click', e)"
        @load="(e)=>$emit('load', e)"/>
@@ -18,9 +20,17 @@
       imgClass: [String, Object],
       dataSrc: String,
       placeholder: String,
+      lazyLoad: {
+        type: Boolean,
+        default: false
+      },
       size: {
         type: [String],
         'default': 'small'
+      },
+      mode: {
+        type: String,
+        default: 'scaleToFill'
       }
     },
     data() {

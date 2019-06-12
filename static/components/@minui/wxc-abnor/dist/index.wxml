@@ -1,11 +1,11 @@
-<view class="abnor">
+<view class="abnor" style="{{abnorStyle}}">
     <view class="abnor__box">
-        <image class="abnor__image" wx:if="{{image}}" src="{{image}}" mode="widthFix"></image>
-        <view class="abnor__text" wx:if="{{title}}">{{title}}</view>
+        <image class="abnor__image" wx:if="{{image}}" src="{{image}}" mode="widthFix" style="{{imgStyle}}"></image>
+        <view class="abnor__text" wx:if="{{title}}" style="{{titleStyle}}">{{title}}</view>
         <view class="abnor__tip" wx:if="{{tip}}">{{tip}}</view>
         <wxc-formid title="{{button}}">
-          <button class="abnor__btn" wx:if="{{button && buttonType === 'contact'}}" open-type="contact" bindtap="emitAbnorTap">{{button}}</button>
-          <view class="abnor__btn" wx:if="{{button && buttonType === ''}}" bindtap="emitAbnorTap">{{button}}</view>
+          <button class="abnor__btn {{buttonClass}}" style="{{buttonStyle}}" wx:if="{{button && buttonType === 'contact'}}" open-type="contact" bindtap="emitAbnorTap">{{button}}</button>
+          <view class="abnor__btn {{buttonClass}}" style="{{buttonStyle}}" wx:if="{{button && buttonType === ''}}" bindtap="emitAbnorTap">{{button}}</view>
         </wxc-formid>
     </view>
 </view>

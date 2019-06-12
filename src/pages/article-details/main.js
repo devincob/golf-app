@@ -5,6 +5,8 @@ app.$mount()
 export default {
   config: {
     navigationBarTitleText: '赛事详情',
+    navigationBarTextStyle: 'black',
+    navigationBarBackgroundColor: '#ffffff',
     usingComponents: {
       'wxc-toast': '@wxc-toast',
       'wxc-loadmore': '@wxc-loadmore',

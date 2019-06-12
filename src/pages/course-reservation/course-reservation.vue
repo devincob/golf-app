@@ -1,32 +1,41 @@
 <template>
   <view class="page page-course-reservation">
-    <view class="flex space-between title">
-      <view style="vertical-align: middle;padding: 2rpx 0;">
-        <image src="/static/images/mark.png" class="mark-icon" mode="aspectFit"/>
-        <span class="ml8 course-name">{{pickerList[pickCourse]}}高尔夫球场</span>
+    <view v-if="!isError">
+      <view class="flex space-between title">
+        <view style="vertical-align: middle;padding: 2rpx 0;">
+          <image src="/static/images/mark.png" class="mark-icon" mode="aspectFit"/>
+          <span class="ml8 course-name">{{pickerList[pickCourse]}}高尔夫球场</span>
+        </view>
+        <view>
+          <picker @change="onCourseChange" :value="pickCourse" :range="pickerList">
+            <span class="course-choice">更换球场</span>
+            <image src="/static/images/right_back.png" class="back-icon ml8" mode="aspectFit"/>
+          </picker>
+        </view>
       </view>
-      <view>
-        <picker @change="onCourseChange" :value="pickCourse" :range="pickerList">
-          <span class="course-choice">更换球场</span>
-          <image src="/static/images/right_back.png" class="back-icon ml8" mode="aspectFit"/>
-        </picker>
+      <view v-if="coursePeriodWeekList && coursePeriodWeekList.length > 0" class="reservation-body">
+        <table>
+          <tr class="table-rows" style="" v-for="(item, $index) in coursePeriodWeekList" :key="item.bookDate">
+            <td class="table-item">
+              <div class="table-item-top">{{item.bookDatestr}}</div>
+              <p class="table-item-bottom">{{item.week}}</p>
+            </td>
+            <td class="table-item normal-item" :class="{'disable': !period.residueTimes || period.isOutTime, 'active': period.active}" v-for="period in item.gcPeriods" :key="period.pidId" @click="onPeriodClick(period, item.bookDate)">
+              <div class="table-item-top">{{period.pidName}}</div>
+              <p v-if="period.isOutTime" class="table-item-bottom">已过期</p>
+              <p v-else-if="period.residueTimes" class="table-item-bottom">剩余：{{period.residueTimes}}人</p>
+              <p v-else class="table-item-bottom">已满</p>
+            </td>
+          </tr>
+        </table>
       </view>
     </view>
-    <view class="reservation-body">
-      <table>
-        <tr class="table-rows" style="" v-for="(item, $index) in coursePeriodWeekList" :key="item.bookDate">
-          <td class="table-item">
-            <div class="table-item-top">{{item.bookDatestr}}</div>
-            <p class="table-item-bottom">{{item.week}}</p>
-          </td>
-          <td class="table-item normal-item" :class="{'disable': !period.residueTimes, 'active': period.active}" v-for="period in item.gcPeriods" :key="period.pidId" @click="onPeriodClick(period, item.bookDate)">
-            <div class="table-item-top">{{period.pidName}}</div>
-            <p v-if="period.residueTimes" class="table-item-bottom">剩余：{{period.residueTimes}}人</p>
-            <p v-else class="table-item-bottom">已满</p>
-          </td>
-        </tr>
-      </table>
-    </view>
+    <wxc-abnor
+      v-if="isError"
+      :title="errorMessage"
+      type="REQUEST_ERROR"
+      abnor-style="position: fixed;bottom: 440rpx;right:0;"
+      @abnortap="refreshPage"></wxc-abnor>
   </view>
 </template>
 
@@ -37,12 +46,25 @@ export default {
       courseList: [],
       pickerList: [],
       pickCourse: '',
-      coursePeriodWeekList: []
+      coursePeriodWeekList: [],
+      isError: false,
+      errorMessage: ''
     }
   },
   methods: {
+    onBack(e){
+      this.queryGolfCoursePeriodWeek(this.courseList[this.pickCourse].gcId)
+      e && e.needRefresh && this.setBackParams({
+        needRefresh: true
+      })
+    },
+    async refreshPage(){
+      await this.queryGolfCourse()
+      !this.isError && this.onCourseChange({target: {value: 0}})
+    },
     async queryGolfCourse(){
       try {
+        this.isError = false
         this.$loading.show()
         this.courseList = await this.$$main.golfCourseList()
         this.pickerList = this.courseList.map((item) => {
@@ -51,19 +73,17 @@ export default {
         this.$loading.hide()
       } catch (e) {
         this.$loading.hide()
-        e.message && this.$wx.showToast({
-          title: e.message,
-          icon: 'none'
-        })
+        this.isError = true
+        this.errorMessage = e.message
       }
     },
     onCourseChange(res){
       this.pickCourse = res.target.value || 0
-      console.log(this.pickCourse)
       this.queryGolfCoursePeriodWeek(this.courseList[this.pickCourse].gcId)
     },
     async queryGolfCoursePeriodWeek(id){
       try {
+        this.isError = false
         this.$loading.show()
         this.coursePeriodWeekList = await this.$$main.golfCoursePeriodWeekGet({
           gCId: id
@@ -71,14 +91,12 @@ export default {
         this.$loading.hide()
       } catch (e) {
         this.$loading.hide()
-        e.message && this.$wx.showToast({
-          title: e.message,
-          icon: 'none'
-        })
+        this.isError = true
+        this.errorMessage = e.message
       }
     },
     onPeriodClick(period, date){
-      if (!period.residueTimes) {
+      if (!period.residueTimes || period.isOutTime) {
         return
       }
       this.coursePeriodWeekList.forEach((i) => {
@@ -90,9 +108,8 @@ export default {
       this.goToPage(`/pages/course-reservation-submit/main?pid=${period.pidId}&date=${date}`)
     }
   },
-  onLoad: function () {
-    this.queryGolfCourse()
-    this.queryGolfCoursePeriodWeek(6)
+  onLoad() {
+    this.refreshPage()
   }
 }
 </script>

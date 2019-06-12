@@ -1,9 +1,9 @@
 .toast {
     position: fixed;
     display: flex;
-    top: 0;
+    top: 45%;
     right: 0;
-    bottom: 0;
+    bottom: initial;
     left: 0;
     flex-direction: column;
     justify-content: center;

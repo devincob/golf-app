@@ -1,5 +1,38 @@
-.weui-tab__panel {
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+.page-index {
+  //padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+
+  .popup__content {
+    width: 300px;
+    height: 150px;
+    /*line-height: 150px;*/
+    background: #FFFFFF;
+    border-radius: 6px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .popup__content__hd {
+    font-size: 18px;
+    border-bottom:1px #ddd solid;
+    height: 46px;
+    line-height: 46px;
+  }
+  .popup__content__bd {
+    flex: 2;
+    padding: 21px;
+  }
+  .popup__content__ft {
+    flex: 1;
+  }
+  .userinfo-btn{
+    border-top-right-radius:0;
+    border-top-left-radius:0;
+    border-color: transparent;
+  }
+
+  .fix-iphonex-tabbar::after {
+    background: #333333;
+  }
 }
 
 .xg_tabbar {
@@ -9,6 +42,7 @@
   }
   position: fixed;
   background-color: #ffffff;
+  box-shadow: #dddddd 0 0 3px;
   .weui-tabbar__item {
     //padding-bottom: 5px;
     .iconfont {

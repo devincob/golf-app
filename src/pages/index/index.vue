@@ -5,25 +5,23 @@
     <home :activeId="activeId" ref="qsb"/>
 
     <!-- 找工作 -->
-    <search-job :activeId="activeId" ref="zgz"/>
+    <service :activeId="activeId" ref="zgz"/>
 
     <!-- 赛事 -->
-    <wallet :activeId="activeId" ref="qb"/>
+    <event-article :activeId="activeId" ref="qb"/>
 
     <!-- 我的 -->
     <user-center :activeId="activeId" ref="wd"/>
 
-    <div class="weui-tabbar xg_tabbar">
+    <div class="weui-tabbar xg_tabbar fix-iphonex-tabbar">
       <a v-for="item in tabs" :key="item.label" class="weui-tabbar__item" @click="onTabItemClick(item)"
          :class="{'weui-bar__item_on': item.active}">
         <span style="display: inline-block;position: relative;">
-          <img :src="'../../static/images/' + item.icon + (item.active ? '_active' : '') + '.png'" class="tab__navbar-item-img"/>
+          <img :src="'/static/images/' + item.icon + (item.active ? '_active' : '') + '.png'" class="tab__navbar-item-img"/>
         </span>
         <p class="weui-tabbar__label">{{item.label}}</p>
       </a>
     </div>
-    <wxc-calendar class="home-calendar" @change="indexCalendarChange"></wxc-calendar>
-    <wxc-calendar class="search-calendar" @change="indexCalendarChange"></wxc-calendar>
     <wxc-popup class="J_getUserInfo_Popup" align="center">
       <div class="popup__content">
         <div class="popup__content__hd">错误提示</div>
@@ -35,12 +33,12 @@
 </template>
 
 <script>
-  import Wallet from './wallet'
+  import EventArticle from './event-article'
   import UserCenter from './user-center'
   import Home from './home'
-  import SearchJob from './search-job'
+  import Service from './service'
   export default {
-    components: {Home, SearchJob, UserCenter, Wallet},
+    components: {Home, Service, UserCenter, EventArticle},
     data () {
       return {
         activeId: 'qsb',
@@ -96,9 +94,6 @@
           title: title
         })
       },
-      indexCalendarChange(e){
-        this.$refs[this.activeId].onCalendarChange(e)
-      },
       onGetUserInfo(e){
         console.log(e)
         if (e.mp.detail.errMsg === 'getUserInfo:fail auth deny') {
@@ -123,32 +118,4 @@
 </script>
 <style lang="less">
   @import "./index.less";
-  .popup__content {
-    width: 300px;
-    height: 150px;
-    /*line-height: 150px;*/
-    background: #FFFFFF;
-    border-radius: 6px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-  }
-  .popup__content__hd {
-    font-size: 18px;
-    border-bottom:1px #ddd solid;
-    height: 46px;
-    line-height: 46px;
-  }
-  .popup__content__bd {
-    flex: 2;
-    padding: 21px;
-  }
-  .popup__content__ft {
-    flex: 1;
-  }
-  .userinfo-btn{
-    border-top-right-radius:0;
-    border-top-left-radius:0;
-    border-color: transparent;
-  }
 </style>
