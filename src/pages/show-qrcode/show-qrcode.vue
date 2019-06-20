@@ -39,9 +39,10 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
   .page-show-qrcode{
     height: 100%;
+    background: #fff;
     display: flex;
     flex-direction: column;
     justify-content: center;

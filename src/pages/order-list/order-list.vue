@@ -16,9 +16,7 @@
             <view class="weui-cells card_box" v-for="(list,index) in waitHandleInfo" :key="index">
               <navigator :href="'/pages/order-detail/main?orderId='+list.orderId">
                 <view class="weui-cell order_number">
-                  <view class="weui-cell__bd order_title">订单号：
-                    <span class="order_title_label">{{list.orderCode}}</span>
-                  </view>
+                  <view class="weui-cell__bd order_title">订单号:<span class="order_title_label">{{list.orderCode}}</span></view>
                   <view class="order_time"><span class="order_time_label">{{list.orderTime}}</span></view>
                 </view>
                 <view class="ect_ect_ect">
@@ -43,9 +41,7 @@
             <view class="weui-cells card_box"  v-for="(list,index) in  completeInfo " :key="index">
               <navigator :href="'/pages/order-detail/main?orderId='+list.orderId">
                 <view class="weui-cell order_number">
-                  <view class="weui-cell__bd order_title">订单号：
-                    <span class="order_title_label">{{list.orderCode}}</span>
-                  </view>
+                  <view class="weui-cell__bd order_title">订单号:<span class="order_title_label">{{list.orderCode}}</span></view>
                   <view class="order_time"><span class="order_time_label">{{list.orderTime}}</span></view>
                 </view>
                 <view class="ect_ect_ect">
@@ -67,9 +63,9 @@
         </div>
       </view>
     </view>
-    <wxc-abnor v-if="activeIndex === 0 && !waitHandleInfo.length && !isError ||activeIndex === 1 && !completeInfo.length && !isError " type="DATA" title="没有订单哦"></wxc-abnor>
+    <wxc-abnor v-if="activeIndex === 0 && !waitHandleInfo.length && !isError ||activeIndex === 1 && !completeInfo.length && !isError " type="DATA" title="没有找到订单哦"></wxc-abnor>
     <wxc-abnor v-if="isError" :title="errorMessage"  type="REQUEST_ERROR" @abnortap="onRefreshTap"></wxc-abnor>
-    <wxc-loadmore is-end v-if="isLast&&isEmpty"></wxc-loadmore>
+    <wxc-loadmore text="没有了呢" is-end v-if="isLast&&isEmpty"></wxc-loadmore>
   </div>
 </template>
 
@@ -121,10 +117,7 @@
         this.queryDetails()
       },
       async queryDetails() {
-        console.log(this.pageIndex, 'pageIndex')
-        console.log(this.activeIndex, 'activeIndex')
         try {
-          this.isError = true
           this.$loading.show()
           if (this.activeIndex === 0) { // 待处理
             let res = await this.$$main.productOrderList({
@@ -150,7 +143,6 @@
             })
             this.waitHandleInfo = [...this.waitHandleInfo, ...datas]
             this.isEmpty = !!this.waitHandleInfo.length
-            // console.log(this.waitHandleInfo, 'waitHandleInfo')
           } else if (this.activeIndex === 1) { // 已完成
             let res = await this.$$main.productOrderList({
               pageIndex: ++this.pageIndex,
@@ -175,16 +167,13 @@
             })
             this.completeInfo = [...this.completeInfo, ...datas]
             this.isEmpty = !!this.completeInfo.length
-            // console.log(this.completeInfo, 'completeInfo')
           }
           this.$loading.hide()
           this.isError = false
-          // console.log('activeIndex', this.activeIndex, '!waitHandleInfo.length', !this.waitHandleInfo.length, '!this.isError', !this.isError, 'this.isLast', this.isLast, 'this.isEmpty', this.isEmpty)
         } catch (e) {
-          this.$loading.hide()
-          e.message && this.$showToast(e.message)
           this.isError = true
           this.errorMessage = e.message
+          this.$loading.hide()
         }
       },
       tabClick (e) {
@@ -226,8 +215,7 @@
   .ect_ect_ect{
     display: flex;padding:14rpx 30rpx;
   }
-
-  div.goods_imgs
+  .goods_imgs
   {
     width:60px;
     height:60px;
@@ -235,23 +223,16 @@
     border:1px solid #bebebe;
     float:left;
     text-align:center;
+    image
+    {
+      display:inline;
+    }
   }
-  div.goods_imgs img
-  {
-    display:inline;
-  }
-  div.goods_imgs a:hover img
-  {
-    border:1px solid #333333;
-  }
-  div.desc
-  {
-    text-align:center;
-    font-weight:normal;
-    width:150px;
-    font-size:12px;
-    margin:10px 5px 10px 5px;
-  }
+
+  /*.goods_imgs a:hover img*/
+  /*{*/
+    /*border:1px solid #333333;*/
+  /*}*/
   .goods_desc_ellipsis{
     float:left;
     text-align:end;
@@ -352,7 +333,8 @@
                 }
                 .order_time{
                   .order_time_label{
-                    padding: 10rpx 20rpx;
+                    float: left;
+                    padding: 8rpx 0rpx 10rpx;
                     /*background: #daecff;*/
                     color: #000;
                     opacity: 0.6;

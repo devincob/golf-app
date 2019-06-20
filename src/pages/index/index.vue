@@ -43,7 +43,7 @@
       return {
         activeId: 'qsb',
         tabs: [
-          {id: 'qsb', label: '预约', title: '球场预约', icon: 'nav_tab_reservation', active: true},
+          {id: 'qsb', label: '预约', title: '预约记录', icon: 'nav_tab_reservation', active: true},
           {id: 'zgz', label: '服务', title: '球场服务', icon: 'nav_tab_service', active: false},
           {id: 'qb', label: '赛事', title: '高球赛事', icon: 'nav_tab_event', active: false},
           {id: 'wd', label: '会员', title: '会员中心', icon: 'nav_tab_member', active: false}

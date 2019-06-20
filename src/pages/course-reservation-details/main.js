@@ -4,11 +4,10 @@ const app = new Vue(App)
 app.$mount()
 export default {
   config: {
-    navigationBarTitleText: '球场预约',
+    navigationBarTitleText: '预约详情',
     usingComponents: {
       'wxc-toast': '@wxc-toast',
       'wxc-abnor': '@wxc-abnor'
     }
   }
 }
-

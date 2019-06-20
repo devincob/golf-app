@@ -4,7 +4,7 @@ const app = new Vue(App)
 app.$mount()
 export default {
   config: {
-    navigationBarTitleText: '我的预约',
+    navigationBarTitleText: '预约记录',
     enablePullDownRefresh: true,
     'navigationBarTextStyle': 'black',
     'navigationBarBackgroundColor': '#ffffff',

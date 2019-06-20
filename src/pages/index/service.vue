@@ -116,7 +116,7 @@
         this.list && this.list.forEach((item) => {
           sum = sum + Number((item.price * item.num).toFixed(2))
         })
-        return sum
+        return sum.toFixed(2)
       }
     },
     methods: {

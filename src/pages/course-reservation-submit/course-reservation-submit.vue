@@ -34,14 +34,17 @@
         <hr/>
         <view class="reservation-info-item">
           <view class="reservation-info-item-left">人数</view>
-          <view class="reservation-info-item-right reservation-number">
+          <view v-if="courseInfo.residueTimes" class="reservation-info-item-right reservation-number">
             <image class="btn-del" src="/static/images/button_del.png" mode="aspectFit" @click="onNumClick(-1)"/>
             <view class="num">{{num}}</view>
             <image class="btn-add" src="/static/images/button_add.png" mode="aspectFit" @click="onNumClick(1)"/>
           </view>
+          <view v-else class="reservation-info-item-right reservation-number">
+            当前场次已约满
+          </view>
         </view>
       </view>
-      <view class="footer">
+      <view v-if="courseInfo.residueTimes" class="footer">
         <view class="btn-submit">
           <view class="sum-div">
             <span class="sum">共计</span><span class="sum-num">￥{{sumAmount}}</span>
@@ -169,6 +172,13 @@ export default {
       this.$find('.pay-dialog') && this.$find('.pay-dialog').hide()
     },
     onSubmitClick(){
+      if (!this.courseInfo.residueTimes) {
+        this.$wx.showToast({
+          title: '场次可预约人数不足,请选择其它场次!',
+          icon: 'none'
+        })
+        return
+      }
       this.payType = '1'
       this.$find('.pay-dialog') && this.$find('.pay-dialog').show()
     },
